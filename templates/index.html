@@ -7,9 +7,19 @@
 
 {% block content %}
 <div class="main">
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+    <div id="chat-container">
+        <div id="chat-log"></div><br>
+        <div id="chat-refresh">
+            <div>
+                <input type="button" value="refresh"
+                onclick='refreshButton()' />
+            </div>
+        </div>
+    </div>
+    <div id="chat-input">
+        <input id="chat-message-input" type="text"><br>
+        <input id="chat-message-submit" type="button" value="Send">
+    </div>
     
     <script>
         const chatSocket = new WebSocket(
@@ -18,9 +28,29 @@
             + '/ws/'
         );
 
+        const chatLog = document.getElementById('chat-log');
+        const chatRefresh = document.getElementById('chat-refresh');
+        
+        let userId;
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            const sendUserId = data.send_user_id
+            userId = data.user_id
+
+            if (data.refresh){
+                chatRefresh.style.display = 'block';
+            }
+            const newDiv = document.createElement('div');
+            const newText = document.createTextNode(data.message);
+
+
+            newDiv.appendChild(newText);
+            
+            newDiv.style.textAlign = (userId == sendUserId) ? 'right' : 'left';
+        
+            chatLog.appendChild(newDiv);
+
+            chatLog.scrollTop = chatLog.scrollHeight;
         };
 
         chatSocket.onclose = function (e) {
@@ -36,12 +66,19 @@
 
         document.querySelector('#chat-message-submit').onclick = function (e) {
             const messageInputDom = document.querySelector('#chat-message-input');
+
+
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+                'sendUserId': userId,
             }));
             messageInputDom.value = '';
         };
+
+        function refreshButton() {
+            window.location.reload();
+        }
     </script>
 </div>
 {% endblock %}
