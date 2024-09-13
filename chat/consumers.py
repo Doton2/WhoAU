@@ -1,5 +1,5 @@
 import json
-
+from django.core.cache import cache
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 waiting_users =[]
@@ -64,8 +64,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         sendUserId = text_data_json["sendUserId"]
-        print(1)
+
+        if not message.replace(' ',''):
+            await self.channel_layer.group_send(
+            self.group_name,
+                {
+                "type": "chat.message",
+                "message": "메시지를 입력해 주세요",
+                "send_user_id":0
+                })
         
+
         await self.channel_layer.group_send(
             self.group_name, {"type": "chat.message", 
             "message": [message],

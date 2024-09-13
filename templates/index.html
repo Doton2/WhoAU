@@ -30,7 +30,8 @@
 
         const chatLog = document.getElementById('chat-log');
         const chatRefresh = document.getElementById('chat-refresh');
-        
+        const submitButton = document.getElementById('chat-message-submit');
+
         let userId;
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
@@ -46,10 +47,16 @@
 
             newDiv.appendChild(newText);
             
-            newDiv.style.textAlign = (userId == sendUserId) ? 'right' : 'left';
-        
-            chatLog.appendChild(newDiv);
+            if (userId == sendUserId){
+                newDiv.style.textAlign = 'right';
+            } else if (sendUserId == 0 ){
+                newDiv.style.textAlign = 'center';
+            } else {
+                newDiv.style.textAlign = 'left';
+            }
 
+            chatLog.appendChild(newDiv);
+            submitButton.disabled = false;
             chatLog.scrollTop = chatLog.scrollHeight;
         };
 
@@ -67,13 +74,13 @@
         document.querySelector('#chat-message-submit').onclick = function (e) {
             const messageInputDom = document.querySelector('#chat-message-input');
 
-
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'sendUserId': userId,
             }));
             messageInputDom.value = '';
+            submitButton.disabled = true;
         };
 
         function refreshButton() {
