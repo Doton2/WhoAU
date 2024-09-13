@@ -2,11 +2,90 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="main" >
-        <h1>index</h1>
+<div class="main">
+    <div id="chat-container">
+        <div id="chat-log"></div><br>
+        <div id="chat-refresh">
+            <div>
+                <input type="button" value="refresh"
+                onclick='refreshButton()' />
+            </div>
+        </div>
     </div>
+    <div id="chat-input">
+        <input id="chat-message-input" type="text"><br>
+        <input id="chat-message-submit" type="button" value="Send">
+    </div>
+    
+    <script>
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/'
+        );
+
+        const chatLog = document.getElementById('chat-log');
+        const chatRefresh = document.getElementById('chat-refresh');
+        const submitButton = document.getElementById('chat-message-submit');
+
+        let userId;
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const sendUserId = data.send_user_id
+            userId = data.user_id
+
+            if (data.refresh){
+                chatRefresh.style.display = 'block';
+            }
+            const newDiv = document.createElement('div');
+            const newText = document.createTextNode(data.message);
+
+
+            newDiv.appendChild(newText);
+            
+            if (userId == sendUserId){
+                newDiv.style.textAlign = 'right';
+            } else if (sendUserId == 0 ){
+                newDiv.style.textAlign = 'center';
+            } else {
+                newDiv.style.textAlign = 'left';
+            }
+
+            chatLog.appendChild(newDiv);
+            submitButton.disabled = false;
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function (e) {
+            if (e.key === 'Enter') {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function (e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'sendUserId': userId,
+            }));
+            messageInputDom.value = '';
+            submitButton.disabled = true;
+        };
+
+        function refreshButton() {
+            window.location.reload();
+        }
+    </script>
+</div>
 {% endblock %}
