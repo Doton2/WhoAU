@@ -41,21 +41,33 @@
             if (data.refresh){
                 chatRefresh.style.display = 'block';
             }
+
             const newDiv = document.createElement('div');
             const newText = document.createTextNode(data.message);
 
-
             newDiv.appendChild(newText);
-            
-            if (userId == sendUserId){
-                newDiv.style.textAlign = 'right';
-            } else if (sendUserId == 0 ){
-                newDiv.style.textAlign = 'center';
+
+            // none message 처리
+            if (data.none_message){
+                if (userId == sendUserId) {
+                    newDiv.style.textAlign = 'center';
+                } else {
+                    newDiv.style.display = 'none'
+                }
             } else {
-                newDiv.style.textAlign = 'left';
+                // 일반 message 처리
+                if (userId == sendUserId){
+                    newDiv.style.textAlign = 'right';
+                } else if (sendUserId == 0 ){
+                    newDiv.style.textAlign = 'center';
+                }  else {
+                    newDiv.style.textAlign = 'left';
+                }
             }
 
             chatLog.appendChild(newDiv);
+
+            // message가 화면에 출력된 경우에만 활성화
             submitButton.disabled = false;
             chatLog.scrollTop = chatLog.scrollHeight;
         };

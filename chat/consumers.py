@@ -47,7 +47,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
             if self.group_name in waiting_users:
                 waiting_users.remove(self.group_name)
-
+            
             await self.channel_layer.group_send(
             self.group_name,
                 {
@@ -66,15 +66,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sendUserId = text_data_json["sendUserId"]
 
         if not message.replace(' ',''):
-            await self.channel_layer.group_send(
+            return await self.channel_layer.group_send(
             self.group_name,
                 {
-                "type": "chat.message",
-                "message": "메시지를 입력해 주세요",
-                "send_user_id":0
+                "type": "none.message",
+                "message": "메시지를 입력해 주세요.",
+                "user_id": self.user_id, 
+                "send_user_id":sendUserId
                 })
         
-
         await self.channel_layer.group_send(
             self.group_name, {"type": "chat.message", 
             "message": [message],
@@ -95,3 +95,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def refresh_page(self, event):
         message = event["message"]
         await self.send(text_data=json.dumps({"refresh": True, "message": [message], "send_user_id":0}))
+    
+    
+    async def none_message(self, event):
+        message = event["message"]
+        sendUserId = event["send_user_id"]
+        await self.send(text_data=json.dumps({"none_message": True, "message": [message],"user_id":self.user_id,
+            "send_user_id":sendUserId}))
+
+
