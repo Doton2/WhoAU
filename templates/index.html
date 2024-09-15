@@ -28,6 +28,7 @@
             + '/ws/'
         );
 
+        const chatContainer = document.getElementById('chat-container');
         const chatLog = document.getElementById('chat-log');
         const chatRefresh = document.getElementById('chat-refresh');
         const submitButton = document.getElementById('chat-message-submit');
@@ -47,29 +48,21 @@
 
             newDiv.appendChild(newText);
 
-            // none message 처리
-            if (data.none_message){
-                if (userId == sendUserId) {
-                    newDiv.style.textAlign = 'center';
-                } else {
-                    newDiv.style.display = 'none'
-                }
-            } else {
-                // 일반 message 처리
-                if (userId == sendUserId){
-                    newDiv.style.textAlign = 'right';
-                } else if (sendUserId == 0 ){
-                    newDiv.style.textAlign = 'center';
-                }  else {
-                    newDiv.style.textAlign = 'left';
-                }
+            if (userId == sendUserId){
+                newDiv.style.textAlign = 'right';
+            } else if (sendUserId == 0 ){
+                newDiv.style.textAlign = 'center';
+            }  else {
+                newDiv.style.textAlign = 'left';
             }
+
 
             chatLog.appendChild(newDiv);
 
-            // message가 화면에 출력된 경우에만 활성화
+            // message가 화면에 출력 됐을 때 버튼 활성화
             submitButton.disabled = false;
-            chatLog.scrollTop = chatLog.scrollHeight;
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         };
 
         chatSocket.onclose = function (e) {

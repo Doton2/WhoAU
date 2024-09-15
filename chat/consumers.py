@@ -65,16 +65,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = text_data_json["message"]
         sendUserId = text_data_json["sendUserId"]
 
-        if not message.replace(' ',''):
-            return await self.channel_layer.group_send(
-            self.group_name,
-                {
-                "type": "none.message",
-                "message": "메시지를 입력해 주세요.",
-                "user_id": self.user_id, 
-                "send_user_id":sendUserId
-                })
+        cache_key = f'{self.group_name}_{self.user_id} '
+        # 중복요청과 도배성 message 방지
+        if cache.get(cache_key):
+            return await self.send(text_data=json.dumps({
+                "message": "도배성 글 작성은 안됩니다.",
+                "user_id": self.user_id,
+                "send_user_id":0}))
         
+        cache.set(cache_key, self.user_id, timeout=1)
+
+        #공백 message 처리
+        if not message.replace(' ',''):
+            return await self.send(text_data=json.dumps({
+                "message": "메시지를 입력해 주세요.",
+                "user_id": self.user_id,
+                "send_user_id":0}))
+
+        #정상 message 처리
         await self.channel_layer.group_send(
             self.group_name, {"type": "chat.message", 
             "message": [message],
@@ -92,15 +100,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "send_user_id":sendUserId}))
 
 
+    # 화면 refresh 버튼 활성화 
     async def refresh_page(self, event):
         message = event["message"]
         await self.send(text_data=json.dumps({"refresh": True, "message": [message], "send_user_id":0}))
     
-    
-    async def none_message(self, event):
-        message = event["message"]
-        sendUserId = event["send_user_id"]
-        await self.send(text_data=json.dumps({"none_message": True, "message": [message],"user_id":self.user_id,
-            "send_user_id":sendUserId}))
-
 
