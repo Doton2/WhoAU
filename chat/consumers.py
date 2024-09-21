@@ -1,12 +1,16 @@
 import json
+import time
 from django.core.cache import cache
 from channels.generic.websocket import AsyncWebsocketConsumer
-
 waiting_users =[]
+
+#redls에 값을 저장해서 관리
+group_status = cache.get('group_status', default=json.dumps({}))
+group_status = json.loads(group_status)
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        
         #websocket 연결
         await self.accept()
 
@@ -15,10 +19,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.partner_user = waiting_users.pop(0)
 
             self.group_name = f"{self.partner_user[-10:]}"
-
             self.user_id = 2
             self.partner_id = 1
-            
+
+            #group 생성시간 저장
+            group_status[self.group_name] = int(time.time())
+            cache.set(key='group_status',value=json.dumps(group_status))
+
             #같은 group_name으로 연결
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             await self.channel_layer.group_add(self.group_name, self.partner_user)
@@ -59,11 +66,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # 그룹에서 제거
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
-
+    
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         sendUserId = text_data_json["sendUserId"]
+
+        #1분 간격으로 group의 상태를 redis에 업데이트
+        if int(time.time())-group_status[self.group_name] > 60:
+            group_status[self.group_name] = int(time.time())
+            cache.set(key='group_status',value=json.dumps(group_status))
+
 
         cache_key = f'{self.group_name}_{self.user_id} '
         # 중복요청과 도배성 message 방지
