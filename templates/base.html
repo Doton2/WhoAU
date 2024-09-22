@@ -11,8 +11,20 @@
     {% endblock %}
 </head>
 <body>
-    <h2>base</h2>
-    {% block content %}
-    {% endblock %}
+    <div class="container">
+        <h1>WhoRU</h1>
+        <div class="top_container">
+            <input type="button" value="Refresh"
+                    onclick='refreshButton()' />
+        </div>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script>
+        function refreshButton() {
+            window.location.reload();
+        }
+    </script>
 </body>
 </html>

@@ -6,91 +6,89 @@
 {% endblock %}
 
 {% block content %}
-<div class="main">
-    <div id="chat-container">
-        <div id="chat-log"></div><br>
-        <div id="chat-refresh">
-            <div>
-                <input type="button" value="refresh"
-                onclick='refreshButton()' />
-            </div>
+
+<div id="chat-container">
+    <div id="chat-log"></div>
+    <br>
+    <div id="chat-refresh">
+        <div>
+            <input type="button" value="Refresh" onclick='refreshButton()' />
         </div>
     </div>
-    <div id="chat-input">
-        <input id="chat-message-input" type="text"><br>
-        <input id="chat-message-submit" type="button" value="Send">
-    </div>
-    
-    <script>
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/'
-        );
-
-        const chatContainer = document.getElementById('chat-container');
-        const chatLog = document.getElementById('chat-log');
-        const chatRefresh = document.getElementById('chat-refresh');
-        const submitButton = document.getElementById('chat-message-submit');
-
-        let userId;
-        chatSocket.onmessage = function (e) {
-            const data = JSON.parse(e.data);
-            const sendUserId = data.send_user_id
-            userId = data.user_id
-
-            if (data.refresh){
-                chatRefresh.style.display = 'block';
-            }
-
-            const newDiv = document.createElement('div');
-            const newText = document.createTextNode(data.message);
-
-            newDiv.appendChild(newText);
-
-            if (userId == sendUserId){
-                newDiv.style.textAlign = 'right';
-            } else if (sendUserId == 0 ){
-                newDiv.style.textAlign = 'center';
-            }  else {
-                newDiv.style.textAlign = 'left';
-            }
-
-
-            chatLog.appendChild(newDiv);
-
-            // message가 화면에 출력 됐을 때 버튼 활성화
-            submitButton.disabled = false;
-            
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        };
-
-        chatSocket.onclose = function (e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function (e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function (e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message,
-                'sendUserId': userId,
-            }));
-            messageInputDom.value = '';
-            submitButton.disabled = true;
-        };
-
-        function refreshButton() {
-            window.location.reload();
-        }
-    </script>
 </div>
+<div id="chat-input">
+    <input id="chat-message-input" type="text" maxlength="50"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+</div>
+
+<script>
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/'
+    );
+
+    const chatContainer = document.getElementById('chat-container');
+    const chatLog = document.getElementById('chat-log');
+    const chatRefresh = document.getElementById('chat-refresh');
+    const submitButton = document.getElementById('chat-message-submit');
+
+
+    let userId;
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        const sendUserId = data.send_user_id
+        const submitButtonStatus = data.submitButton
+        userId = data.user_id
+
+        if (data.refresh) {
+            chatRefresh.style.display = 'block';
+        }
+
+        const newDiv = document.createElement('div');
+        const newText = document.createTextNode(data.message);
+
+        newDiv.appendChild(newText);
+
+        if (userId == sendUserId) {
+            newDiv.style.textAlign = 'right';
+        } else if (sendUserId == 0) {
+            newDiv.style.textAlign = 'center';
+            newDiv.style.fontWeight = '600'
+        } else {
+            newDiv.style.textAlign = 'left';
+        }
+
+        chatLog.appendChild(newDiv);
+
+        // message가 출력 될때 submit button 상태 가져오기
+        submitButton.disabled = submitButtonStatus;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function (e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'sendUserId': userId,
+        }));
+        messageInputDom.value = '';
+        submitButton.disabled = true;
+    };
+
+</script>
+
 {% endblock %}
