@@ -1,5 +1,24 @@
 body {
-    width: 450px;
-    margin: auto;
     background: rgba(0,0,0,0.1);
+    height: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container{
+    width: 450px;
+}
+
+h1{
+    text-align: center;
+    margin-top: 0;
+}
+
+.top_container{
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 10px;
 }
