@@ -18,7 +18,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # waiting_user에 있는 channel_name가져오기 
             self.partner_user = waiting_users.pop(0)
 
-            self.group_name = f"{self.partner_user[-10:]}"
+            self.group_name = self.partner_user[-10:]
             self.user_id = 2
             self.partner_id = 1
 
