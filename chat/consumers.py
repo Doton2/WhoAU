@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 from django.core.cache import cache
 from channels.generic.websocket import AsyncWebsocketConsumer
 waiting_users =[]
@@ -12,13 +13,10 @@ group_status = json.loads(group_status)
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         #websocket 연결
-        await self.accept()
 
         if waiting_users: 
             # waiting_user에 있는 channel_name가져오기 
-            self.partner_user = waiting_users.pop(0)
-
-            self.group_name = self.partner_user[-10:]
+            self.group_name = waiting_users.pop(0)
             self.user_id = 2
             self.partner_id = 1
 
@@ -28,26 +26,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
             #같은 group_name으로 연결
             await self.channel_layer.group_add(self.group_name, self.channel_name)
-            await self.channel_layer.group_add(self.group_name, self.partner_user)
+            await self.accept()
 
-            await self.send(text_data=json.dumps({
-                "message": "대화 상대가 연결 됐습니다.",
-                "user_id": self.user_id,
-                "submitButton": False,
-                "send_user_id":0}))
-            await self.channel_layer.send(self.partner_user, {"type": "chat.message", 
+            await self.channel_layer.group_send(self.group_name, {"type": "chat.message", 
             "message": '대화 상대가 연결 됐습니다', 
             "submitButton": False,
             "user_id": self.user_id, 
             "send_user_id":0})
-            
+
         else:
             #waiting_user가 없으면 waiting에 추가 
-            waiting_users.append(self.channel_name)
-            
             self.user_id = 1
             self.partner_id = 2
-            self.group_name = self.channel_name[-10:]
+            self.group_name = str(uuid.uuid4())
+            waiting_users.append(self.group_name)
+
+            #group_name으로 연결 
+            await self.channel_layer.group_add(self.group_name, self.channel_name)
+            await self.accept()
+
             await self.send(text_data=json.dumps({
                 "message": "대화 상대를 기다리고 있습니다.",
                 "submitButton": True,
@@ -57,8 +54,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
             # 같은 이름이의 waiting_user 가있으면 제거
-            if self.channel_name in waiting_users:
-                waiting_users.remove(self.channel_name)
+            if self.group_name in waiting_users:
+                waiting_users.remove(self.group_name)
 
             await self.channel_layer.group_send(
             self.group_name,
@@ -74,7 +71,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     
     async def receive(self, text_data):
         # 아직 대기중인 user일 경우 메시지 못보내게 방지
-        if self.channel_name in waiting_users:
+        if self.group_name in waiting_users:
             return await self.send(text_data=json.dumps({
                 "message": "대화 상대를 기다리고 있습니다.",
                 "submitButton": True,
