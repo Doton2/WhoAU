@@ -12,8 +12,8 @@ group_status = json.loads(group_status)
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        #websocket 연결
 
+        #기다리는 user가 있는지 확인 
         if waiting_users: 
             # waiting_user에 있는 channel_name가져오기 
             self.group_name = waiting_users.pop(0)
