@@ -26,11 +26,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    "54.180.140.206",
-    "127.0.0.1",
-    "localhost",
-]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
