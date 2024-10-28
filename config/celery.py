@@ -20,6 +20,6 @@ app.conf.timezone = 'Asia/Seoul'
 app.conf.beat_schedule = {
     "no-activate-delete": {
         "task": "chat.tasks.task_group_delete",
-        "schedule": crontab(minute='*/10')
+        "schedule": crontab(minute='*/5')
     }
 }
