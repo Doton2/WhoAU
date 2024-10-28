@@ -5,7 +5,6 @@ from config.celery import app
 from django.core.cache import cache
 from decouple import config
 
-
 rd = redis.StrictRedis(host = config("REDIS_ADDRESS"),port= config("REDIS_PORT"),password=config("REDIS_PASSWORD"), db=0)
 
 @app.task()

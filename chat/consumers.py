@@ -38,8 +38,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             #waiting_user가 없으면 waiting에 추가 
             self.user_id = 1
             self.partner_id = 2
-            self.group_name = str(uuid.uuid4())
+            self.group_name = str(uuid.uuid4())[::-5]
             waiting_users.append(self.group_name)
+
+            #group 생성시간 저장
+            group_status[self.group_name] = int(time.time())
+            cache.set(key='group_status',value=json.dumps(group_status))
 
             #group_name으로 연결 
             await self.channel_layer.group_add(self.group_name, self.channel_name)
@@ -50,7 +54,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "submitButton": True,
                 "user_id": self.user_id,
                 "send_user_id":0}))
-
 
     async def disconnect(self, close_code):
             # 같은 이름이의 waiting_user 가있으면 제거
