@@ -62,7 +62,7 @@ WhoAU 누구인지 모른 상대와 램덤으로 말하지 못할 고민과 속�
     <details>
     <summary>이미지</summary>
     <div markdown="1">
-        <img width="990" alt="스크린샷 2024-11-02 17 04 10" src="https://github.com/user-attachments/assets/c8a34121-0e17-4728-9f2f-7aacfef4b6c8">
+        <img width="473" alt="스크린샷 2024-11-02 17 04 44" src="https://github.com/user-attachments/assets/14bd0f44-a995-4580-97cc-d414ebc7bf9c">
     </div>
     </details>
 3. 채팅 화면 
@@ -71,7 +71,7 @@ WhoAU 누구인지 모른 상대와 램덤으로 말하지 못할 고민과 속�
     <details>
     <summary>이미지</summary>
     <div markdown="1">
-        <img width="473" alt="스크린샷 2024-11-02 17 04 44" src="https://github.com/user-attachments/assets/14bd0f44-a995-4580-97cc-d414ebc7bf9c">
+        <img width="990" alt="스크린샷 2024-11-02 17 04 10" src="https://github.com/user-attachments/assets/c8a34121-0e17-4728-9f2f-7aacfef4b6c8">
     </div>
     </details>
 4. 대화 도중에 나갈 경우
