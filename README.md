@@ -56,7 +56,7 @@ WhoAU 누구인지 모른 상대와 램덤으로 말하지 못할 고민과 속�
     - 사이트에 접속시,  현재 접속한 상대가 있는지 확인합니다.
     - 연결 상대가 없으면  ‘대화 상대를 기다리고 있습니다.’ 메시지가 표시 되고 ㄴend 버튼이 비활성화 됩니다.
     - **Refresh** 버튼을 클릭하면 새로고침됩니다.
-    - <details>
+   <details>
     <summary>이미지</summary>
     <div markdown="1">
         <img width="473" alt="스크린샷 2024-11-02 17 04 44" src="https://github.com/user-attachments/assets/14bd0f44-a995-4580-97cc-d414ebc7bf9c">
