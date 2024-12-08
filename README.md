@@ -1,7 +1,7 @@
 # WhoAU
 
 ## 목차
-[1. 프로젝트 정보](## 프로젝트 정보)
+[1. 프로젝트 정보](## 📄프로젝트 정보)
 [2. 프로젝트 소개}(## 프로젝트 소개)
 [3. 요구 사항](## 요구 사항)
 [4. 사용 설명서](## 사용 설명서)
@@ -56,7 +56,7 @@ WhoAU 누구인지 모른 상대와 램덤으로 말하지 못할 고민과 속�
     - 사이트에 접속시,  현재 접속한 상대가 있는지 확인합니다.
     - 연결 상대가 없으면  ‘대화 상대를 기다리고 있습니다.’ 메시지가 표시 되고 ㄴend 버튼이 비활성화 됩니다.
     - **Refresh** 버튼을 클릭하면 새로고침됩니다.
-   <details>
+    <details>
     <summary>이미지</summary>
     <div markdown="1">
         <img width="473" alt="스크린샷 2024-11-02 17 04 44" src="https://github.com/user-attachments/assets/14bd0f44-a995-4580-97cc-d414ebc7bf9c">
@@ -64,7 +64,7 @@ WhoAU 누구인지 모른 상대와 램덤으로 말하지 못할 고민과 속�
     </details>
 2. 연결 상대가 있는 경우 
     - 상대방이 접속하면 **‘대화 상대가 연결되었습니다.’** 메시지가 표시되고, **Send** 버튼이 활성화됩니다.
-    - <details>
+      <details>
     <summary>이미지</summary>
     <div markdown="1">
         <img width="990" alt="스크린샷 2024-11-02 17 04 10" src="https://github.com/user-attachments/assets/c8a34121-0e17-4728-9f2f-7aacfef4b6c8">
@@ -73,7 +73,7 @@ WhoAU 누구인지 모른 상대와 램덤으로 말하지 못할 고민과 속�
 3. 채팅 화면 
     - 내가 보낸 메시지는 화면의 오른쪽에, 상대방의 메시지는 왼쪽에 표시됩니다.
     - 연결이 유지되는 동안 자유롭게 대화할 수 있습니다.
-    - <details>
+      <details>
     <summary>이미지</summary>
     <div markdown="1">
         <img width="524" alt="스크린샷 2024-11-02 17 03 17" src="https://github.com/user-attachments/assets/fbaf5d81-f44e-4c6e-aba7-1ccfb053e6c2">
@@ -83,7 +83,7 @@ WhoAU 누구인지 모른 상대와 램덤으로 말하지 못할 고민과 속�
     - 상대방이 연결을 종료하면  ‘상대방과 연결이 끊어졌습니다.’  메시지가 표시 되고, Refresh버튼이 나타납니다.
     - Send 버튼이 비활성화 됩니다.
     - **Refresh** 버튼을 클릭하면 새로 연결할 상대를 찾습니다.
-    - <details>
+      <details>
     <summary>이미지</summary>
     <div markdown="1">
         <img width="982" alt="스크린샷 2024-11-02 17 04 27" src="https://github.com/user-attachments/assets/a2347e5a-a06a-4bb8-a6db-74bb3829c2d9">
